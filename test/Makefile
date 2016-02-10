@@ -1,0 +1,25 @@
+NAME := cdt_test
+DEPENDENCIES := cdt/core/cdt_core.dll
+LIBS := -libcdt_core.dll
+INCLUDE_DIRS := -I../../lib
+
+# [exec|shared|static]
+BIN_TYPE := static
+
+INSTALL_DIR := cdt/test
+
+# TEST_DIR := ./_test
+# TEST_EXEC := cdt_app_test.exe
+
+# CXX := g++
+# CFLAGS := -Wall -Werror -std=gnu++11 -I/usr/local/include
+
+# SRC_DIR := ./src
+# TMP_DIR := ./tmp
+# OBJ_DIR := $(TMP_DIR)/obj
+# DEP_DIR := $(TMP_DIR)/depend
+# BIN_DIR := ./bin
+
+include ../Makefile.generic
+
+# Your targets
