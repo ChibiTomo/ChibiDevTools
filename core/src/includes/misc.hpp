@@ -1,0 +1,1 @@
+#ifndef CDT_CORE_MISC_H#define CDT_CORE_MISC_Hnamespace cdt {template <typename Base, typename T>inline bool instanceOf(const T* ptr);template <typename Base, typename T>inline bool instanceOf();bool hasFlag(int value, int flag);} // cdt#include "misc.impl.hpp"#endif // CDT_CORE_MISC_H
