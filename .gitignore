@@ -1,4 +1,7 @@
 __template
+**/bin
+**/lib
+**/tmp
 
 # Compiled Object files
 *.slo

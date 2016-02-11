@@ -1,12 +1,11 @@
 NAME := cdt_test_test
-DEPENDENCIES := cdt/core/cdt_core.dll
+DEPENDENCIES := ./bin/cdt_core.dll
 LIBS := -lcdt_test -lcdt_core.dll 
 LIB_DIRS:= -L/usr/local/lib/cdt/core -L/usr/local/lib/cdt/test
 INCLUDE_DIRS := -I../../../lib
 
 # [exec|shared|static]
 BIN_TYPE := exec
-INSTALL_DIR := dummy
 
 # CXX := g++
 # CFLAGS := -Wall -Werror -std=gnu++11 -I/usr/local/include
@@ -17,8 +16,9 @@ INSTALL_DIR := dummy
 # DEP_DIR := $(TMP_DIR)/depend
 # BIN_DIR := ./bin
 
-include ../../Makefile.generic
+include ../../Makefile.test.generic
 
 # Your targets
 
-install:
+./bin/cdt_core.dll: 
+	$(call copy_file, /usr/local/bin/cdt/core/$(notdir $@), $@)

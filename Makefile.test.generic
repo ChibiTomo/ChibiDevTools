@@ -2,7 +2,7 @@ check_defined = $(foreach 1,$1,$(__check_defined))
 __check_defined = \
     $(if $(value $1),, \
       $(error Undefined $1$(if $(value 2), ($(strip $2)))))
-	  
+
 copy_file = @if [ -a $1 ]; then \
 		echo Copying $$(basename $1); \
 		mkdir -p $$(dirname $2); \
@@ -16,7 +16,6 @@ copy_file = @if [ -a $1 ]; then \
 ifneq ($(MAKECMDGOALS),clean)
   $(call check_defined, NAME, name of the bin)
   $(call check_defined, BIN_TYPE, type of the bin [exec|shared|static])
-  $(call check_defined, INSTALL_DIR, dir of the install)
 endif
 
 DEPENDENCIES ?=
@@ -36,13 +35,6 @@ DEP_DIR ?= $(TMP_DIR)/depend
 BIN_DIR ?= ./bin
 LIB_DIR ?= ./lib
 INC_DIR ?= $(SRC_DIR)/includes
-INSTALL_BIN_DIR ?= $(LOCAL_BIN)/$(INSTALL_DIR)
-INSTALL_INC_DIR ?= $(LOCAL_INC)/$(INSTALL_DIR)
-INSTALL_LIB_DIR ?= $(LOCAL_LIB)/$(INSTALL_DIR)
-
-TEST_DIR ?= ./_test
-TEST_BIN ?= $(NAME)_test.exe
-TEST_EXEC ?= $(TEST_DIR)/bin/$(TEST_BIN)
 
 CPP_FILES ?= $(subst $(SRC_DIR)/,,$(shell find $(SRC_DIR) -type f -name '*.cpp'))
 HPP_FILES ?= $(subst $(SRC_DIR)/,,$(shell find $(SRC_DIR) -type f -name '*.hpp'))
@@ -87,9 +79,9 @@ $(TARGET): $(OBJ_FILES)
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(LIB_DIR)
 ifeq ($(BIN_TYPE),static)
-	$(AR) $(ARFLAGS) $(TARGET) $(OBJ_FILES) $(LIBS_PATH)
+	$(AR) $(ARFLAGS) $@ $(OBJ_FILES) $(LIBS_PATH)
 else
-	$(CXX) $(CFLAGS) $(OBJ_FILES) $(LIB_DIRS) $(LIBS) -o $(TARGET)
+	$(CXX) $(CFLAGS) $(OBJ_FILES) $(LIB_DIRS) $(LIBS) -o $@
 endif
 		
 $(OBJ_FILES): $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -103,58 +95,12 @@ clean:
 	rm -rf $(BIN_DIR)
 	rm -rf $(LIB_DIR)
 	
-
-install: $(TARGET)
-ifeq ($(strip $(INSTALL_INC_DIR)),)
-else
-	@echo Installing includes into $(INSTALL_INC_DIR)
-	@mkdir -p $(INSTALL_INC_DIR)
-	@cp -rf $(INC_DIR)/* $(INSTALL_INC_DIR)
-endif
-ifeq ($(strip $(INSTALL_BIN_DIR)),)
-else
-	@echo Installing bin into $(INSTALL_BIN_DIR)
-	@mkdir -p $(INSTALL_BIN_DIR)
-	@cp -rf $(BIN_DIR)/* $(INSTALL_BIN_DIR)
-endif
-ifeq ($(strip $(INSTALL_LIB_DIR)),)
-else
-	@echo Installing lib into $(INSTALL_LIB_DIR)
-	@mkdir -p $(INSTALL_LIB_DIR)
-	@cp -rf $(LIB_DIR)/* $(INSTALL_LIB_DIR)
-endif
-
-uninstall: $(TARGET)
-ifeq ($(strip $(INSTALL_INC_DIR)),)
-else
-	@echo Uninstalling includes from $(INSTALL_INC_DIR)
-	@rm -rf $(INSTALL_INC_DIR)
-endif
-ifeq ($(strip $(INSTALL_BIN_DIR)),)
-else
-	@echo Uninstalling bin from $(INSTALL_BIN_DIR)
-	@rm -rf $(INSTALL_BIN_DIR)
-endif
-ifeq ($(strip $(INSTALL_LIB_DIR)),)
-else
-	@echo Uninstalling lib from $(INSTALL_LIB_DIR)
-	@rm -rf $(INSTALL_LIB_DIR)
-endif
-
-test: $(TARGET) $(DEPENDENCIES) $(TEST_EXEC)
-	@( \
-		cd $(TEST_DIR); \
-		make test; \
-	)
-
-$(TEST_EXEC):
-	@( \
-		echo -------------------------------------------; \
-		echo Start make tests; \
-		echo -------------------------------------------; \
-		cd $(TEST_DIR); \
-		make all; \
-		echo -------------------------------------------; \
-		echo End make tests; \
-		echo -------------------------------------------; \
-	)
+test: $(TARGET) $(DEPENDENCIES)
+	@echo -------------------------------------------; \
+	echo Running tests; \
+	echo -------------------------------------------; \
+	cd $(BIN_DIR); \
+	./$(notdir $(TARGET)); \
+	echo -------------------------------------------; \
+	echo End tests; \
+	echo -------------------------------------------;

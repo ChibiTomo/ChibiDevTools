@@ -1,5 +1,5 @@
 NAME := cdt_test
-DEPENDENCIES := cdt/core/cdt_core.dll
+DEPENDENCIES := ./bin/cdt_core.dll
 LIBS := -libcdt_core.dll
 INCLUDE_DIRS := -I../../lib
 
@@ -23,3 +23,6 @@ INSTALL_DIR := cdt/test
 include ../Makefile.generic
 
 # Your targets
+
+./bin/cdt_core.dll: 
+	$(call copy_file, /usr/local/bin/cdt/core/$(notdir $@), $@)
