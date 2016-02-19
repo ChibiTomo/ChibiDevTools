@@ -1,6 +1,6 @@
 NAME := cdt_test_test
 DEPENDENCIES := ./bin/cdt_core.dll
-LIBS := -lcdt_test -lcdt_core.dll 
+LIBS := ../lib/libcdt_test.a -lcdt_core.dll 
 LIB_DIRS:= -L/usr/local/lib/cdt/core -L/usr/local/lib/cdt/test
 INCLUDE_DIRS := -I../../../lib
 

@@ -36,6 +36,12 @@ BIN_DIR ?= ./bin
 LIB_DIR ?= ./lib
 INC_DIR ?= $(SRC_DIR)/includes
 
+PARENT_DIR = ..
+PARENT_BIN_DIR ?= ./bin
+PARENT_LIB_DIR ?= ./lib
+PARENT_BIN_DEPT ?= $(wildcard $(PARENT_DIR)/$(PARENT_BIN_DIR)/*)
+PARENT_LIB_DEPT ?= $(wildcard $(PARENT_DIR)/$(PARENT_LIB_DIR)/*)
+
 CPP_FILES ?= $(subst $(SRC_DIR)/,,$(shell find $(SRC_DIR) -type f -name '*.cpp'))
 HPP_FILES ?= $(subst $(SRC_DIR)/,,$(shell find $(SRC_DIR) -type f -name '*.hpp'))
 DEP_FILES := $(CPP_FILES:%.cpp=$(DEP_DIR)/%.d)
@@ -63,18 +69,26 @@ else
 TARGET := $(TARGET_DIR)/$(NAME).$(TARGET_EXT)
 endif
 
-.PHONY: all depend clean test install uninstall
+.PHONY: all depend clean test parent
 
 	
-all: $(TARGET) $(DEPENDENCIES)
+all: $(TARGET) $(DEPENDENCIES) parent
 
 depend: $(DEPENDENCIES)
+
+parent: $(PARENT_BIN_DEPT) $(PARENT_LIB_DEPT)
+
+$(PARENT_BIN_DEPT): $(PARENT_DIR)/$(PARENT_BIN_DIR)/%:
+	@( \
+	  cd $(PARENT_DIR); \
+	  make $@; \
+	)
 
 ifneq ($(MAKECMDGOALS),clean)
 -include $(DEP_FILES)
 endif
 
-$(TARGET): $(OBJ_FILES)
+$(TARGET): $(OBJ_FILES) $(PARENT_BIN_DEPT) $(PARENT_LIB_DEPT)
 	@echo Linking $@
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(LIB_DIR)
