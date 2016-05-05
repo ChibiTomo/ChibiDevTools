@@ -7,6 +7,8 @@ INCLUDE_DIRS := -I../../lib
 BIN_TYPE := static
 
 INSTALL_DIR := cdt/test
+#No binary to install
+INSTALL_BIN_DIR := 
 
 # TEST_DIR := ./_test
 # TEST_EXEC := cdt_app_test.exe

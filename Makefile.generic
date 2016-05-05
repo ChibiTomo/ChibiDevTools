@@ -36,6 +36,10 @@ DEP_DIR ?= $(TMP_DIR)/depend
 BIN_DIR ?= ./bin
 LIB_DIR ?= ./lib
 INC_DIR ?= $(SRC_DIR)/includes
+LOCAL ?= /usr/local
+LOCAL_BIN ?= $(LOCAL)/bin
+LOCAL_INC ?= $(LOCAL)/include
+LOCAL_LIB ?= $(LOCAL)/lib
 INSTALL_BIN_DIR ?= $(LOCAL_BIN)/$(INSTALL_DIR)
 INSTALL_INC_DIR ?= $(LOCAL_INC)/$(INSTALL_DIR)
 INSTALL_LIB_DIR ?= $(LOCAL_LIB)/$(INSTALL_DIR)
@@ -124,7 +128,7 @@ else
 	@cp -rf $(LIB_DIR)/* $(INSTALL_LIB_DIR)
 endif
 
-uninstall: $(TARGET)
+uninstall:
 ifeq ($(strip $(INSTALL_INC_DIR)),)
 else
 	@echo Uninstalling includes from $(INSTALL_INC_DIR)

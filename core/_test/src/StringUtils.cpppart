@@ -1,0 +1,72 @@
+#include <vector>
+
+DESCRIBE("StringUtils")
+
+	IT("padLeft")
+		std::string str = "Hello World";
+		auto expected = "xxxxxHello World";
+		str = cdt::StringUtils::padLeft(str, 'x', 5 + str.size());
+		SHOULD(std::string, str).BE(expected);
+	END_IT
+	IT("padRight")
+		std::string str = "Hello World";
+		auto expected = "Hello Worldxxxxx";
+		str = cdt::StringUtils::padRight(str, 'x', 5 + str.size());
+		SHOULD(std::string, str).BE(expected);
+	END_IT
+	IT("center")
+		std::string str = "Hello World";
+		auto expected = "xxHello Worldxxx";
+		str = cdt::StringUtils::center(str, 'x', 5 + str.size());
+		SHOULD(std::string, str).BE(expected);
+		
+		str = "Hello World";
+		expected = "xxxHello Worldxxx";
+		str = cdt::StringUtils::center(str, 'x', 6 + str.size());
+		SHOULD(std::string, str).BE(expected);
+	END_IT
+	
+	IT("split")
+		std::string str = "Hello World";
+		std::vector<std::string> expected;
+		expected.push_back("Hello");
+		expected.push_back("World");
+		std::vector<std::string> test = cdt::StringUtils::split(str, " ");
+		SHOULD(int, test.size()).BE(expected.size());
+		for (unsigned int i = 0; i < expected.size(); ++i) {
+			SHOULD(std::string, test.at(i)).BE(expected.at(i));
+		}
+	END_IT
+	IT("join")
+		std::vector<std::string> vec;
+		vec.push_back("Hello");
+		vec.push_back("World");
+		auto expected = "Hello World";
+		auto str = cdt::StringUtils::join(vec, " ");
+		SHOULD(std::string, str).BE(expected);
+	END_IT
+	
+	IT("startsWith")
+		std::string str = "Hello World";
+		SHOULD(bool, cdt::StringUtils::startsWith(str, "Hell")).BE_TRUE;
+		SHOULD(bool, cdt::StringUtils::startsWith(str, "hell")).NOT.BE_TRUE;
+	END_IT
+	IT("endsWith")
+		std::string str = "Hello World";
+		SHOULD(bool, cdt::StringUtils::endsWith(str, "World")).BE_TRUE;
+		SHOULD(bool, cdt::StringUtils::endsWith(str, "world")).NOT.BE_TRUE;
+	END_IT
+	IT("contains")
+		std::string str = "Hello World";
+		SHOULD(bool, cdt::StringUtils::contains(str, "lo Wo")).BE_TRUE;
+		SHOULD(bool, cdt::StringUtils::contains(str, "lo wo")).NOT.BE_TRUE;
+	END_IT
+	
+	IT("makeString")
+		std::string str = "Hello %s: %d*%d=>0x%04X";
+		auto expected = "Hello World: 42*42=>0x06E4";
+		str = cdt::StringUtils::makeString(str, "World", 42, 42, 1764);
+		SHOULD(std::string, str).BE(expected);
+	END_IT
+	
+END_DESCRIBE
