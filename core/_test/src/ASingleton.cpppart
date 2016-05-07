@@ -1,0 +1,29 @@
+DESCRIBE("ASingleton")
+
+	IT("Instantiation")
+		class Basic : public cdt::ASingleton<Basic> {
+			SINGLETON(Basic);
+			public:
+				int m_count = 0;
+				void count() {
+					++m_count;
+				}
+		};
+		
+		// Basic* adrs1 = &(Basic.instance());
+		// SHOULD(A*, &(A.instance())).NOT.BE(nullptr);
+		// SHOULD(int, A.instance().m_count).BE(0);
+		
+		// A.instance().count();
+		// A.instance().count();
+		// A.instance().count();
+		// SHOULD(int, A.instance().m_count).BE(3);
+		
+		// A.destroy();
+		// A* adrs2 = &(A.instance());
+		// SHOULD(A*, adrs2).NOT.BE(nullptr);
+		
+		// SHOULD(A*, adrs1).NOT.BE(adrs2);
+	END_IT
+	
+END_DESCRIBE

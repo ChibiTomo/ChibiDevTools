@@ -1,0 +1,22 @@
+DESCRIBE("variadic")
+
+	IT("VARIADIC_COUNT")
+		int i = VARIADIC_COUNT(1, 2, 3, 4, 5);
+		auto expected = 5;		
+		SHOULD(int, i).BE(expected);
+	END_IT
+	IT("FOREACH")
+		int i = 0;
+		auto fxn = [&i](int var) { ++i; };
+		auto expected = 5;
+		FOREACH(fxn, 1, 2, 3, 4, 5);
+		SHOULD(int, i).BE(expected);
+	END_IT
+	IT("VARIADIC_GET_X")
+		SHOULD(int, VARIADIC_GET_4(1,0,8,6,12,25)).BE(6);
+		SHOULD(int, VARIADIC_GET_5(1,0,8,6,12,25)).BE(12);
+		SHOULD(int, VARIADIC_GET_1(1,0,8,6,12,25)).BE(1);
+		SHOULD(int, VARIADIC_GET_6(1,0,8,6,12,25)).BE(25);
+	END_IT
+	
+END_DESCRIBE

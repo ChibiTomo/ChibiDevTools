@@ -1,2 +1,2 @@
-#ifndef CDT_CORE_ASINGLETON_IMPL_H#define CDT_CORE_ASINGLETON_IMPL_H#include <cstddef>namespace cdt {template<class T>T& ASingleton<T>::instance() {	if (!p_inst) {		p_inst = new T;	}	return *p_inst;}
-template<class T>void ASingleton<T>::destroy() {	delete p_inst;	p_inst = NULL;}template<class T> T* ASingleton<T>::p_inst = NULL;template<class T> ASingleton<T>::~ASingleton<T>() {}} // cdt#endif // CDT_CORE_ASINGLETON_H
+#ifndef CDT_CORE_ASINGLETON_IMPL_HPP#define CDT_CORE_ASINGLETON_IMPL_HPP#include <cstddef>namespace cdt {template<class T>T& ASingleton<T>::instance() {	if (!p_inst) {		p_inst = new T;	}	return *p_inst;}
+template<class T>void ASingleton<T>::destroy() {	delete p_inst;	p_inst = NULL;}template<class T> T* ASingleton<T>::p_inst = NULL;template<class T> ASingleton<T>::~ASingleton<T>() {}} // cdt#endif // CDT_CORE_ASINGLETON_HPP
