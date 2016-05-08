@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+#include <iostream>
 
 #include "../../src/includes/ASingleton.hpp"
 #include "../../src/includes/StringUtils.hpp"

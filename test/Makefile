@@ -1,6 +1,6 @@
 NAME := cdt_test
-DEPENDENCIES := ./bin/cdt_core.dll
-LIBS := -libcdt_core.dll
+DEPENDENCIES :=
+LIBS :=
 INCLUDE_DIRS := -I../../lib
 
 # [exec|shared|static]
