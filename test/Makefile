@@ -25,6 +25,3 @@ INSTALL_BIN_DIR :=
 include ../Makefile.generic
 
 # Your targets
-
-./bin/cdt_core.dll: 
-	$(call copy_file, /usr/local/bin/cdt/core/$(notdir $@), $@)

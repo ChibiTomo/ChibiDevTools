@@ -1,7 +1,7 @@
 NAME := cdt_app
-DEPENDENCIES := cdt/core/cdt_core.dll
+DEPENDENCIES := ./bin/cdt_core.dll
 LIBS := -libcdt_core.dll
-LIBS_PATH := /usr/local/lib/cdt/libcdt_core.dll.a
+LIBS_PATH := /usr/local/lib/cdt/core/libcdt_core.dll.a
 INCLUDE_DIRS := -I../../lib
 
 # [exec|shared|static]
@@ -29,3 +29,6 @@ INSTALL_DIR := cdt/application
 include ../Makefile.generic
 
 # Your targets
+
+./bin/cdt_core.dll: 
+	$(call copy_file, /usr/local/bin/cdt/core/$(notdir $@), $@)

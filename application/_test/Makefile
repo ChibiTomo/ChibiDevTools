@@ -19,9 +19,12 @@ TARGET := $(BIN_DIR)/$(NAME).exe
 # include ../../Makefile.generic
 
 # Your targets
-.PHONY: all clean exec 
+.PHONY: all clean exec test
 
 all: module exec
+
+test: module exec
+	./$(TARGET)
 
 exec: $(TARGET)
 
