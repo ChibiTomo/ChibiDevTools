@@ -23,7 +23,7 @@ DEPENDENCIES ?=
 CXX ?= g++
 AR ?= ar
 
-CFLAGS ?= -Wall -Werror -std=gnu++11
+CFLAGS ?= -Wall -Werror -std=gnu++17
 ARFLAGS := cru
 
 INCLUDE_DIRS += -I/usr/local/include
