@@ -106,7 +106,10 @@ clean:
 	rm -rf $(TMP_DIR)
 	rm -rf $(BIN_DIR)
 	rm -rf $(LIB_DIR)
-	
+	@( \
+        cd $(TEST_DIR); \
+        make clean; \
+    )
 
 install: $(TARGET)
 ifeq ($(strip $(INSTALL_INC_DIR)),)
