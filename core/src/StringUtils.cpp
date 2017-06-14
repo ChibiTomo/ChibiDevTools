@@ -1,5 +1,6 @@
 #include "StringUtils.hpp"
 
+#include <cstdio>
 #include <cstdarg>
 #include <string>
 #include <vector>
