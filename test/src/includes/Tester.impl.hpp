@@ -80,7 +80,6 @@ inline Tester<T>& Tester<T>::be(const T value) {
 };
 template<typename T>
 inline Tester<T>& Tester<T>::be(const T* value) {
-	std::cout<<"passed pointer";
 	_buildResultStr(value);
 	TEST(mp_toTest == value, TEST_ERROR_BE(m_resultStr.c_str()), TEST_ERROR_BE_NOT(m_resultStr.c_str()));
 	return Tester<T>::instance();
@@ -93,12 +92,12 @@ inline Tester<T>& Tester<T>::beNull() {
 };
 
 template<typename T>
-Tester<T>& Tester<T>::_throw(const testFxn_t& fxn) {
+inline Tester<T>& Tester<T>::_throw(const testFxn_t& fxn) {
 	_buildThrowResultStr();
 	bool catched = false;
 	try {
 		fxn();
-	} catch (T e) {
+	} catch (const T& e) {
 		catched = true;
 		if (m_inverted) {
 			throw cdt::TestException(*mp_file, m_line, TEST_ERROR_THROW_NOT(m_resultStr.c_str()));
@@ -121,30 +120,30 @@ template<typename T>
 inline void Tester<T>::_buildResultStr(const T* value) {
 	std::stringstream ss;
 	ss	<< std::endl
-		<< "\tTested: " << *mp_toTest << std::endl
-		<< "\tExpected: " << *value << std::endl;
+		<< "    Tested: " << *mp_toTest << std::endl
+		<< "    Expected: " << *value << std::endl;
 	m_resultStr = ss.str();
 };
 template<>
 inline void Tester<bool>::_buildResultStr(const bool* value) {
 	std::stringstream ss;
 	ss	<< std::endl
-		<< "\tTested: " << (*mp_toTest? "true" : "false") << std::endl
-		<< "\tExpected: " << (*value? "true" : "false") << std::endl;
+		<< "    Tested: " << (*mp_toTest? "true" : "false") << std::endl
+		<< "    Expected: " << (*value? "true" : "false") << std::endl;
 	m_resultStr = ss.str();
 };
 template<typename T>
 inline void Tester<T>::_buildResultStr() {
 	std::stringstream ss;
 	ss	<< std::endl
-		<< "\tTested: ";
+		<< "    Tested: ";
 	if (mp_toTest == nullptr) {
 		ss << "nullptr";
 	} else {
 		ss 	<< mp_toTest;
 	}
 	ss	<< std::endl
-		<< "\tExpected: " << (m_inverted? "not nullptr" : "nullptr") << std::endl;
+		<< "    Expected: " << (m_inverted? "not nullptr" : "nullptr") << std::endl;
 	m_resultStr = ss.str();
 };
 

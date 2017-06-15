@@ -1,6 +1,8 @@
-#include "MyApp.hpp"
+#include <cdt/test/test.hpp>
 
-int main() {
-	cdt::MyApp *app = new cdt::MyApp();
-	return app->start();
-}
+BEGIN_TEST
+
+#include "Application.cpppart"
+#include "Module.cpppart"
+
+END_TEST

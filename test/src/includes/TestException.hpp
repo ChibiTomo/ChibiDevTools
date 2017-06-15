@@ -15,12 +15,17 @@ namespace cdt {
 struct TestException : public std::exception {
 	public:
 		TestException(const std::string& msg = "");
+		TestException(const std::string& file, const int& line, const std::string& msg = "");
 		virtual ~TestException() throw();
 
 		virtual const char* what() const throw();
+		const std::string& getFile() const;
+		const int getLine() const;
 
 	private:
 		std::string m_msg;
+		std::string m_file;
+		int m_line;
 };
 
 } // namespace cdt

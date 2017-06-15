@@ -2,6 +2,7 @@
 #define CDT_TEST_MACRO_HPP
 
 #include <string>
+#include <cdt/core/macro.h>
 #include "Tester.hpp"
 
 #define _BEGIN_TEST \
@@ -23,18 +24,20 @@
 	testcaseList.push_back(testCase); \
 }
 
-#define _BEFORE_EACH(BODY...) \
+#define _BEFORE_EACH \
 	struct BeforeEach { \
-		static void process() { \
-			BODY \
+		static void process() {
+
+#define _END_BEFORE_EACH \
 		}; \
 	}; \
 	testCase.beforeEach = BeforeEach::process;
 
 #define _AFTER_EACH(BODY...) \
 	struct AfterEach { \
-		static void process() { \
-			BODY \
+		static void process() {
+
+#define _END_AFTER_EACH \
 		}; \
 	}; \
 	testCase.afterEach = AfterEach::process;
@@ -52,25 +55,27 @@
 	testCase.testList.push_back(test); \
 }
 
-#define _SHOULD_NOT_THROW(CODE...) SHOULD_NOT_THROW_TYPE(std::exception, CODE)
-#define _SHOULD_NOT_THROW_TYPE(T, CODE...) { \
+#define _SHOULD_NOT_THROW _SHOULD_NOT_THROW_TYPE
+#define _END_SHOULD_NOT_THROW _END_SHOULD_NOT_THROW_TYPE(std::exception)
+#define _SHOULD_NOT_THROW_TYPE { \
 	struct UNIQUE_NAME(ThrowFxn) { \
-		static void process() { \
-			CODE \
-		}; \
+		static void process() {
+
+#define _END_SHOULD_NOT_THROW_TYPE(T) }; \
 	}; \
 	cdt::Tester<T>::init(__FILE__, __LINE__).not_()._throw(UNIQUE_NAME(ThrowFxn)::process) \
 		.reset(); \
 }
 
-#define _SHOULD_THROW(CODE...) _SHOULD_THROW_TYPE(std::exception, CODE)
-#define _SHOULD_THROW_TYPE(T, CODE...) { \
-	struct UNIQUE_NAME(ThrowFxn) { \
-		static void process() { \
-			CODE \
-		}; \
+#define _SHOULD_THROW _SHOULD_THROW_TYPE
+#define _END_SHOULD_THROW _END_SHOULD_THROW_TYPE(std::exception)
+#define _SHOULD_THROW_TYPE { \
+	struct ThrowFxn { \
+		static void process() {
+
+#define _END_SHOULD_THROW_TYPE(T) }; \
 	}; \
-	cdt::Tester<T>::init(__FILE__, __LINE__)._throw(UNIQUE_NAME(ThrowFxn)::process) \
+	cdt::Tester<T>::init(__FILE__, __LINE__)._throw(ThrowFxn::process) \
 		.reset(); \
 }
 

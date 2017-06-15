@@ -1,0 +1,37 @@
+DESCRIBE("Application")
+
+    BEFORE_EACH
+    END_BEFORE_EACH
+
+    IT("Instantiation")
+        class A : public cdt::ASingleton<A> {
+            SINGLETON(A);
+            public:
+                int m_count = 0;
+                void count() {
+                    ++m_count;
+                }
+            private:
+                ~A() {};
+        };
+        
+        std::shared_ptr<A> ptr1 = A::instance();
+        SHOULD(std::shared_ptr<A>, ptr1).NOT.BE_NULL;
+        SHOULD(int, A::instance()->m_count).BE(0);
+        
+        A::instance()->count();
+        A::instance()->count();
+        A::instance()->count();
+        SHOULD(int, A::instance()->m_count).BE(3);
+        SHOULD_CONDITION(A::instance()->m_count == ptr1->m_count).BE_TRUE;
+        
+        {
+            std::shared_ptr<A> ptr2 = A::instance();        
+            SHOULD(std::shared_ptr<A>, ptr2).NOT.BE_NULL;    
+            SHOULD(int, ptr1.use_count()).BE(2);
+            SHOULD_CONDITION(ptr1 == ptr2).BE_TRUE;
+        }
+        SHOULD(int, ptr1.use_count()).BE(1);
+    END_IT
+    
+END_DESCRIBE

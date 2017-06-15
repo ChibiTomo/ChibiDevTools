@@ -67,12 +67,12 @@ void run_test(const std::vector<cdt::TestCase>* testcaseList) {
 				testcase.afterEach();
 				std::cout << cdt::test::padLeft("OK   ", '.', 15) << std::endl;
 				successNbr++;
-			} catch (cdt::TestException e) {
+			} catch (const cdt::TestException& e) {
 				std::cout << cdt::test::padLeft("Test Fail   ", '.', 15) << std::endl;
 //				std::cout << e.getFile() << ":" << e.getLine() << std::endl;
 				std::cout << "   " << e.what() << std::endl;
 				errorNbr++;
-			} catch (std::exception e) {
+			} catch (const std::exception& e) {
 				std::cout << cdt::test::padLeft("Error   ", '.', 15) << std::endl;
 				std::cout << "   " << e.what() << std::endl;
 				errorNbr++;
