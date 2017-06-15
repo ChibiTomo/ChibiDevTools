@@ -1,20 +1,17 @@
 #ifndef CDT_TEST_TESTER_HPP
 #define CDT_TEST_TESTER_HPP
 
+#include <functional>
 #include <string>
 #include <vector>
 
-typedef void (*testFxn_t)();
+typedef std::function<void()> testFxn_t;
 
 namespace cdt {
 	
 namespace test {
 	std::string makeString(const std::string& format, ...);
 }
-
-struct Dummy {
-	static void doNothing() {};
-};
 
 struct Test {
 	std::string desc;

@@ -48,54 +48,139 @@ std::string center(const std::string& str, const char c, size_t length) {
 
 } // test
 
-void run_test(const std::vector<cdt::TestCase>* testcaseList) {
-	int total = 0;
-	int failCount = 0;
-	int successCount = 0;
+struct TestReport_str {
+    int total;
+    int success;
+    int fail;
+};
+
+bool run_test(const cdt::TestCase& testcase, const cdt::Test& test) {
+    bool success = true;
+    bool hasError = false;
+
+	std::stringstream resultStrStrm;
+    try {
+        std::cout << cdt::test::padRight("   " + test.desc, '.', 64);
+        testcase.beforeEach();
+    } catch (const cdt::TestException& e) {
+        resultStrStrm << "   Before each, test fail:" << std::endl;
+        resultStrStrm << "   " << e.what() << std::endl;
+        success = false;
+    } catch (const std::exception& e) {
+        resultStrStrm << "   The before each function caused an error:" << std::endl;
+        resultStrStrm << "    " << e.what() << std::endl;
+        success = false;
+        hasError = true;
+    } catch (...) {
+        resultStrStrm << "   The before each function caused an error:" << std::endl;
+        resultStrStrm << "   " << "Unknown exception" << std::endl;
+        success = false;
+        hasError = true;
+    }
+
+    try {
+        test.test();
+    } catch (const cdt::TestException& e) {
+        resultStrStrm << "   " << e.what() << std::endl;
+        success = false;
+    } catch (const std::exception& e) {
+        resultStrStrm << "   " << e.what() << std::endl;
+        success = false;
+        hasError = true;
+    } catch (...) {
+        resultStrStrm << "   " << "Unknown exception" << std::endl;
+        success = false;
+        hasError = true;
+    }
+
+    try {
+        testcase.afterEach();
+    } catch (const cdt::TestException& e) {
+        resultStrStrm << "   After each, test fail:" << std::endl;
+        resultStrStrm << "   " << e.what() << std::endl;
+        success = false;
+    } catch (const std::exception& e) {
+        resultStrStrm << "   The after each function caused an error:" << std::endl;
+        resultStrStrm << "    " << e.what() << std::endl;
+        success = false;
+        hasError = true;
+    } catch (...) {
+        resultStrStrm << "   The after each function caused an error:" << std::endl;
+        resultStrStrm << "   " << "Unknown exception" << std::endl;
+        success = false;
+        hasError = true;
+    }
+    
+    if (success) {        
+        std::cout << cdt::test::padLeft("OK   ", '.', 15) << std::endl;
+    } else {
+        if (hasError) {
+            std::cout << cdt::test::padLeft("Error   ", '.', 15) << std::endl;
+        } else {
+            std::cout << cdt::test::padLeft("Test Fail   ", '.', 15) << std::endl;
+        }
+//        std::cout << e.getFile() << ":" << e.getLine() << std::endl;
+        std::cout << resultStrStrm.str();
+    }
+
+    return success;
+}
+
+TestReport_str run_test_case(const cdt::TestCase& testcase) {
+    int total = 0;
+    int success = 0;
+    int fail = 0;
+    std::cout << cdt::test::center(" " + testcase.desc + " ", '=', 79) << std::endl;
+    for (const cdt::Test &test : testcase.testList) {
+        total++;
+        if (run_test(testcase, test)) {
+            success++;
+        } else {
+            fail++;
+        }
+    }
+    std::stringstream ss;
+    ss << "Run: " << total << ", Success: " << success << ", Fail: " << fail;
+    std::cout << cdt::test::center(" " + ss.str() + " ", '=', 79) << std::endl;
+    std::cout << std::endl;
+    
+    TestReport_str report;
+    report.total = total;
+    report.success = success;
+    report.fail = fail;
+    return report;
+}
+
+void run_test_list(const std::vector<cdt::TestCase>* testcaseList) {
+	int totalGrp = 0;
+	int failGrp = 0;
+	int successGrp = 0;
+	int totalUnit = 0;
+	int failUnit = 0;
+	int successUnit = 0;
 	for (const cdt::TestCase &testcase : *testcaseList) {
-		total++;
-		int totalRun = 0;
-		int errorNbr = 0;
-		int successNbr = 0;
-		std::cout << cdt::test::center(" " + testcase.desc + " ", '=', 79) << std::endl;
-		for (const cdt::Test &test : testcase.testList) {
-			try {
-				totalRun++;
-				std::cout << cdt::test::padRight("   " + test.desc, '.', 64);
-				testcase.beforeEach();
-				test.test();
-				testcase.afterEach();
-				std::cout << cdt::test::padLeft("OK   ", '.', 15) << std::endl;
-				successNbr++;
-			} catch (const cdt::TestException& e) {
-				std::cout << cdt::test::padLeft("Test Fail   ", '.', 15) << std::endl;
-//				std::cout << e.getFile() << ":" << e.getLine() << std::endl;
-				std::cout << "   " << e.what() << std::endl;
-				errorNbr++;
-			} catch (const std::exception& e) {
-				std::cout << cdt::test::padLeft("Error   ", '.', 15) << std::endl;
-				std::cout << "   " << e.what() << std::endl;
-				errorNbr++;
-			} catch (...) {
-				std::cout << cdt::test::padLeft("Error   ", '.', 15) << std::endl;
-				std::cout << "   " << "Unknown exception" << std::endl;
-				errorNbr++;
-			}
-		}
-		if (errorNbr == 0) {
-			successCount++;
-		} else {
-			failCount++;
-		}
-		std::stringstream ss;
-		ss << "Run: " << totalRun << ", Success: " << successNbr << ", Errors: " << errorNbr;
-		std::cout << cdt::test::center(" " + ss.str() + " ", '=', 79) << std::endl;
-		std::cout << std::endl;
+        try {    
+            totalGrp++;
+            TestReport_str report = run_test_case(testcase);
+            if (report.fail == 0) {                
+                successGrp++;
+            } else {
+                failGrp++;
+            }
+            totalUnit+=report.total;
+            failUnit+=report.fail;
+            successUnit+=report.success;
+        } catch (...) {
+            failGrp++;
+        }
 	}
 	std::cout << cdt::test::center(" Tests results ", '=', 79) << std::endl;
-	std::cout << cdt::test::padLeft("Total tests:   ", ' ', 20) << total << std::endl;
-	std::cout << cdt::test::padLeft("Total success: ", ' ', 20) << successCount << std::endl;
-	std::cout << cdt::test::padLeft("Total fail:    ", ' ', 20) << failCount << std::endl;
+	std::cout << cdt::test::padRight(cdt::test::makeString("Total group run:     %d", totalGrp), ' ', 40);
+	std::cout << cdt::test::padRight(cdt::test::makeString("Total unit run:     %d", totalUnit), ' ', 40) << std::endl;
+	std::cout << cdt::test::padRight(cdt::test::makeString("Total group success: %d", successGrp), ' ', 40);
+	std::cout << cdt::test::padRight(cdt::test::makeString("Total unit success: %d", successUnit), ' ', 40) << std::endl;
+	std::cout << cdt::test::padRight(cdt::test::makeString("Total group fail:    %d", failGrp), ' ', 40);
+	std::cout << cdt::test::padRight(cdt::test::makeString("Total unit fail:    %d", failUnit), ' ', 40) << std::endl;
 }
 
 } // namespace cdt

@@ -39,7 +39,8 @@
 
 namespace cdt {
 	
-void run_test(const std::vector<cdt::TestCase>* testcaseList);
+void run_test_list(const std::vector<cdt::TestCase>* testcaseList);
+
 
 } // cdt
 
