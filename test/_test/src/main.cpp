@@ -112,6 +112,14 @@ DISABLE DESCRIBE("I AM DISABLED")
 END_DESCRIBE
 
 DESCRIBE("SOME OF MY TESTS ARE DISABLED")
+
+    BEFORE_EACH
+        DISABLE SHOULD(int, 1).BE(2);
+    END_BEFORE_EACH
+    AFTER_EACH
+        DISABLE SHOULD(int, 1).BE(2);
+    END_AFTER_EACH
+
 	DISABLE IT("It is disabled")
         throw std::runtime_error("I am not disabled... :'(");
 	END_IT

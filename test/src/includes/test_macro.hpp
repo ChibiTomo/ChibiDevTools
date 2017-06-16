@@ -31,17 +31,19 @@
 }
 
 #define _BEFORE_EACH \
-    auto beforeEach_l = [&] ()->int {
+    auto beforeEach_l = [&] ()->int { \
+        int testDisabledNbr = 0;
 #define _END_BEFORE_EACH \
-        return 0; \
+        return testDisabledNbr; \
     }; \
 	testCase.beforeEach = beforeEach_l;
 
 #define _AFTER_EACH \
-    auto afterEach_l = [&] ()->int {
+    auto afterEach_l = [&] ()->int { \
+        int testDisabledNbr = 0;
 
 #define _END_AFTER_EACH \
-        return 0; \
+        return testDisabledNbr; \
     }; \
 	testCase.afterEach = afterEach_l;
 

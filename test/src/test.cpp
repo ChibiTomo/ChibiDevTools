@@ -69,7 +69,7 @@ bool run_test(const cdt::TestCase& testcase, const cdt::Test& test) {
 
 	std::stringstream resultStrStrm;
     try {
-        testcase.beforeEach();
+        disabledNbr += testcase.beforeEach();
     } catch (const cdt::TestException& e) {
         resultStrStrm << "   Before each, test fail:" << std::endl;
         resultStrStrm << "   " << e.what() << std::endl;
@@ -102,7 +102,7 @@ bool run_test(const cdt::TestCase& testcase, const cdt::Test& test) {
     }
 
     try {
-        testcase.afterEach();
+        disabledNbr += testcase.afterEach();
     } catch (const cdt::TestException& e) {
         resultStrStrm << "   After each, test fail:" << std::endl;
         resultStrStrm << "   " << e.what() << std::endl;
