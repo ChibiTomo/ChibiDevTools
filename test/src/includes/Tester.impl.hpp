@@ -28,6 +28,7 @@ namespace cdt {
 
 template<typename T> const T* Tester<T>::mp_toTest = NULL;
 template<typename T> bool Tester<T>::m_inverted = false;
+template<typename T> bool Tester<T>::m_disabled = false;
 template<typename T> const std::string* Tester<T>::mp_file = NULL;
 template<typename T> int Tester<T>::m_line = 0;
 template<typename T> std::string Tester<T>::m_resultStr = "";
@@ -48,10 +49,11 @@ inline Tester<T>::~Tester<T>() {
 };
 
 template<typename T>
-inline Tester<T>& Tester<T>::init(const std::string& file, int line) {
+inline Tester<T>& Tester<T>::init(const std::string& file, int line, bool disabled) {
 	reset();
 	mp_file = &file;
 	m_line = line;
+    m_disabled = disabled;
 	return Tester<T>::instance();
 };
 
@@ -68,44 +70,52 @@ inline Tester<T>& Tester<T>::toTest(const T* var) {
 
 template<typename T>
 inline Tester<T>& Tester<T>::not_() {
-	m_inverted = true;
+	m_inverted = !m_inverted;
 	return Tester<T>::instance();
 };
 
 template<typename T>
 inline Tester<T>& Tester<T>::be(const T value) {
-	_buildResultStr(&value);
-	TEST(*mp_toTest == value, TEST_ERROR_BE(m_resultStr.c_str()), TEST_ERROR_BE_NOT(m_resultStr.c_str()));
+    if (!m_disabled) {
+        _buildResultStr(&value);
+        TEST(*mp_toTest == value, TEST_ERROR_BE(m_resultStr.c_str()), TEST_ERROR_BE_NOT(m_resultStr.c_str()));
+    }
 	return Tester<T>::instance();
 };
 template<typename T>
 inline Tester<T>& Tester<T>::be(const T* value) {
-	_buildResultStr(value);
-	TEST(mp_toTest == value, TEST_ERROR_BE(m_resultStr.c_str()), TEST_ERROR_BE_NOT(m_resultStr.c_str()));
+    if (!m_disabled) {
+        _buildResultStr(value);
+        TEST(mp_toTest == value, TEST_ERROR_BE(m_resultStr.c_str()), TEST_ERROR_BE_NOT(m_resultStr.c_str()));
+    }
 	return Tester<T>::instance();
 };
 template<typename T>
 inline Tester<T>& Tester<T>::beNull() {
-	_buildResultStr();
-	TEST(mp_toTest == nullptr, TEST_ERROR_BE_NULL(m_resultStr.c_str()), TEST_ERROR_BE_NULL_NOT(m_resultStr.c_str()));
+    if (!m_disabled) {
+        _buildResultStr();
+        TEST(mp_toTest == nullptr, TEST_ERROR_BE_NULL(m_resultStr.c_str()), TEST_ERROR_BE_NULL_NOT(m_resultStr.c_str()));
+    }
 	return Tester<T>::instance();
 };
 
 template<typename T>
 inline Tester<T>& Tester<T>::_throw(const testFxn_t& fxn) {
-	_buildThrowResultStr();
-	bool catched = false;
-	try {
-		fxn();
-	} catch (const T& e) {
-		catched = true;
-		if (m_inverted) {
-			throw cdt::TestException(*mp_file, m_line, TEST_ERROR_THROW_NOT(m_resultStr.c_str()));
-		}
-	}
-	if (!catched && !m_inverted) {
-		throw cdt::TestException(*mp_file, m_line, TEST_ERROR_THROW(m_resultStr.c_str()));
-	}
+    if (!m_disabled) {
+        _buildThrowResultStr();
+        bool catched = false;
+        try {
+            fxn();
+        } catch (const T& e) {
+            catched = true;
+            if (m_inverted) {
+                throw cdt::TestException(*mp_file, m_line, TEST_ERROR_THROW_NOT(m_resultStr.c_str()));
+            }
+        }
+        if (!catched && !m_inverted) {
+            throw cdt::TestException(*mp_file, m_line, TEST_ERROR_THROW(m_resultStr.c_str()));
+        }
+    }
 	return Tester<T>::instance();
 };
 
@@ -114,6 +124,7 @@ inline void Tester<T>::reset() {
 	m_inverted = false;
 	mp_toTest = nullptr;
 	m_resultStr = "";
+    m_disabled = false;
 };
 
 template<typename T>

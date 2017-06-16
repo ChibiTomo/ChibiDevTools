@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-typedef std::function<void()> testFxn_t;
+typedef std::function<int()> testFxn_t;
 
 namespace cdt {
 	
@@ -16,6 +16,7 @@ namespace test {
 struct Test {
 	std::string desc;
 	testFxn_t test;
+    bool disabled;
 };
 
 struct TestCase {
@@ -23,6 +24,7 @@ struct TestCase {
 	testFxn_t afterEach;
 	std::string desc;
 	std::vector<Test> testList;
+    bool disabled;
 };
 
 template<typename T>
@@ -31,7 +33,7 @@ public:
 	static Tester<T>& instance();
 	virtual ~Tester<T> ();
 
-	static Tester<T>& init(const std::string& file, int line);
+	static Tester<T>& init(const std::string& file, int line, bool disabled);
 
 	static Tester<T>& toTest(const T& var);
 	static Tester<T>& toTest(const T* var);
@@ -52,6 +54,7 @@ private:
 	static const std::string* mp_file;
 	static std::string m_resultStr;
 	static int m_line;
+	static bool m_disabled;
 	static Tester<T>* mp_inst;
 	
 	Tester<T>() {};

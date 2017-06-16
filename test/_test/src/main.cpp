@@ -105,4 +105,25 @@ DESCRIBE("THROW")
 	END_IT
 END_DESCRIBE
 
+DISABLE DESCRIBE("I AM DISABLED")
+	IT("ERROR!!!!!")
+        throw std::runtime_error("I am not disabled... :'(");
+	END_IT
+END_DESCRIBE
+
+DESCRIBE("SOME OF MY TESTS ARE DISABLED")
+	DISABLE IT("It is disabled")
+        throw std::runtime_error("I am not disabled... :'(");
+	END_IT
+	IT("Some should be disabled")
+        DISABLE SHOULD(int, 1).BE(2);
+        SHOULD(int, 1).BE(1);
+        DISABLE SHOULD_CONDITION(2==1).BE_TRUE;
+        DISABLE SHOULD_NOT_THROW
+            throw 42;
+        END_SHOULD_NOT_THROW
+	END_IT
+END_DESCRIBE
+
+
 END_TEST
